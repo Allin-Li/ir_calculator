@@ -35,5 +35,28 @@
 </template>
 
 <script setup>
+import { ref, computed } from 'vue'
 
+// Reactive values
+const waist = ref(null)
+const hba1c = ref(null)
+const triglycerides = ref(null)
+
+// Computed insulin sensitivity
+const insulinSensitivity = computed(() => {
+  if (!isValid.value) return null
+  return Number(((waist.value * triglycerides.value) / hba1c.value).toFixed(2))
+})
+
+// Validation check
+const isValid = computed(() => {
+  return (
+    Number.isFinite(waist.value) &&
+    Number.isFinite(hba1c.value) &&
+    Number.isFinite(triglycerides.value) &&
+    waist.value > 0 &&
+    hba1c.value > 0 &&
+    triglycerides.value > 0
+  )
+})
 </script>
