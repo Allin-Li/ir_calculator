@@ -43,9 +43,22 @@ const hba1c = ref(null)
 const triglycerides = ref(null)
 
 // Computed insulin sensitivity
+
 const insulinSensitivity = computed(() => {
   if (!isValid.value) return null
-  return Number(((waist.value * triglycerides.value) / hba1c.value).toFixed(2))
+  
+  // Convert triglycerides to mg/dL
+  const triglyceridesMgdl = triglycerides.value / 0.0113
+  
+  // Calculate using the research formula
+  const exponent = 4.64725 
+    - (0.02032 * waist.value) 
+    - (0.09779 * hba1c.value)
+    - (0.00235 * triglyceridesMgdl)
+  
+  const IS = Math.exp(exponent)
+  
+  return Number(IS.toFixed(2))
 })
 
 // Validation check
