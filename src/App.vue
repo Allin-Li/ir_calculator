@@ -1,5 +1,6 @@
 <template>
-  <div data-theme="nord" class="min-h-screen bg-base-100 text-base-content p-4">
+  <div class="min-h-screen text-base-content p-4">
+    <input type="checkbox" value="dracula" class="toggle theme-controller" />
     <div class="card bg-base-200 max-w-sm mx-auto flex justify-center items-center pb-8">
       <h2 class="text-xl mb-4">Калькулятор инсулинорезистентности</h2>
 
@@ -21,10 +22,10 @@
         type="number" 
         v-model.number="triglycerides" 
         placeholder="Триглицериды (ммоль/л)" 
-        class="input"
+        class="input mb-4"
       />
 
-      <div v-if="isValid" class="alert alert-success">
+      <div v-if="isValid" class="alert alert-success w-80">
         <p>IS Index: {{insulinSensitivity}}</p>
         <small>Men ≤5.02, Women ≤5.64 indicates resistance</small>
       </div>
@@ -33,6 +34,7 @@
   </div>
 
 </template>
+
 
 <script setup>
 import { ref, computed } from 'vue'
