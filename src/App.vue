@@ -1,8 +1,11 @@
 <template>
-    <div class="fixed top-4 left-4">
-      <ThemeToggle :theme="theme" @toggle-theme="toggleTheme" />
+    <div class="fixed top-0 right-0 w-full h-10 bg-base-100 z-50">
+      <div class="fixed top-2 left-2" 
+           :class="{ 'opacity-0': isScrolled }">
+        <ThemeToggle :theme="theme" @toggle-theme="toggleTheme" />
+      </div>
     </div>
-  <div class="flex flex-col md:flex-row gap-4 max-w-[800px] text-base-content p-4 mx-auto mt-8">
+  <div class="flex flex-col md:flex-row gap-4 max-w-[800px] text-base-content p-3 mx-auto mt-8">
     
     <Calculator />
     <Notes />
