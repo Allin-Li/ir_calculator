@@ -1,49 +1,74 @@
 <template>
   <div class="min-h-screen text-base-content p-4">
-    <label class="flex cursor-pointer gap-2">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5" /><path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4" /></svg>
-      <input type="checkbox" :checked="theme === 'dracula'" @change="toggleTheme" class="toggle theme-controller" />
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-    </label>
-    <div class="card bg-base-200 max-w-sm mx-auto flex justify-center items-center pb-8">
-      <h2 class="text-xl mb-4">Калькулятор инсулинорезистентности</h2>
+    <ThemeToggle :theme="theme" @toggle-theme="toggleTheme" />
+    
+    <div class="card bg-base-200 max-w-sm mx-auto shadow-xl">
+      <div class="card-body">
+        <h2 class="card-title justify-center mb-4">Калькулятор инсулинорезистентности</h2>
 
-      <input 
-        type="number" 
-        v-model.number="waist" 
-        placeholder="Окружность талии (см)" 
-        class="input mb-4"
-      />
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Окружность талии (см)</span>
+          </label>
+          <input 
+            type="number" 
+            v-model.number="waist" 
+            class="input input-bordered"
+            min="0"
+            step="0.1"
+            required
+          />
+        </div>
 
-      <input 
-        type="number" 
-        v-model.number="hba1c" 
-        placeholder="HbA1c (%)" 
-        class="input mb-4"
-      />
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">HbA1c (%)</span>
+          </label>
+          <input 
+            type="number" 
+            v-model.number="hba1c" 
+            class="input input-bordered"
+            min="0"
+            step="0.1"
+            required
+          />
+        </div>
 
-      <input 
-        type="number" 
-        v-model.number="triglycerides" 
-        placeholder="Триглицериды (ммоль/л)" 
-        class="input mb-4"
-      />
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Триглицериды (ммоль/л)</span>
+          </label>
+          <input 
+            type="number" 
+            v-model.number="triglycerides" 
+            class="input input-bordered"
+            min="0"
+            step="0.01"
+            required
+          />
+        </div>
 
-      <div v-if="isValid" class="alert alert-success w-80">
-        <p>IS Index: {{insulinSensitivity}}</p>
-        <small>Men ≤5.02, Women ≤5.64 indicates resistance</small>
+        <div v-if="showResult" class="mt-4">
+          <div class="alert alert-success">
+            <p class="font-semibold">IS Index: {{ insulinSensitivity }}</p>
+            <small>Мужчины ≤5.02, Женщины ≤5.64 указывают на резистентность</small>
+          </div>
+        </div>
+
+        <div v-if="showError" class="mt-4">
+          <div class="alert alert-error">
+            <p>Пожалуйста, введите корректные положительные значения во все поля</p>
+          </div>
+        </div>
       </div>
-
     </div>
   </div>
-
 </template>
 
-
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
+import ThemeToggle from './components/ThemeToggle.vue'
 
-// Theme handling
 const theme = ref(localStorage.getItem('theme') || 'light')
 
 const toggleTheme = () => {
@@ -56,39 +81,35 @@ onMounted(() => {
   document.documentElement.setAttribute('data-theme', theme.value)
 })
 
-// Reactive values
+// Calculator logic
 const waist = ref(null)
 const hba1c = ref(null)
 const triglycerides = ref(null)
 
-// Computed insulin sensitivity
+const isValid = computed(() => (
+  Number.isFinite(waist.value) && waist.value > 0 &&
+  Number.isFinite(hba1c.value) && hba1c.value > 0 &&
+  Number.isFinite(triglycerides.value) && triglycerides.value > 0
+))
+
+const showResult = computed(() => isValid.value)
+const showError = computed(() => !isValid.value && hasInteracted.value)
+
+const hasInteracted = ref(false)
+watch([waist, hba1c, triglycerides], () => {
+  hasInteracted.value = true
+})
 
 const insulinSensitivity = computed(() => {
   if (!isValid.value) return null
   
-  // Convert triglycerides to mg/dL
   const triglyceridesMgdl = triglycerides.value / 0.0113
   
-  // Calculate using the research formula
   const exponent = 4.64725 
     - (0.02032 * waist.value) 
     - (0.09779 * hba1c.value)
     - (0.00235 * triglyceridesMgdl)
   
-  const IS = Math.exp(exponent)
-  
-  return Number(IS.toFixed(2))
-})
-
-// Validation check
-const isValid = computed(() => {
-  return (
-    Number.isFinite(waist.value) &&
-    Number.isFinite(hba1c.value) &&
-    Number.isFinite(triglycerides.value) &&
-    waist.value > 0 &&
-    hba1c.value > 0 &&
-    triglycerides.value > 0
-  )
+  return Number(Math.exp(exponent).toFixed(2))
 })
 </script>
