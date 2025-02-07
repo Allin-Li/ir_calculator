@@ -1,6 +1,8 @@
 <template>
-  <div class="min-h-screen text-base-content p-4">
-    <ThemeToggle :theme="theme" @toggle-theme="toggleTheme" />
+    <div class="fixed top-4 left-4">
+      <ThemeToggle :theme="theme" @toggle-theme="toggleTheme" />
+    </div>
+  <div class="flex flex-col md:flex-row gap-4 max-w-[800px] text-base-content p-4 mx-auto mt-8">
     
     <Calculator />
     <Notes />

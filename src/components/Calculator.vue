@@ -1,7 +1,7 @@
 <template>
   <div class="card bg-base-200 max-w-sm mx-auto shadow-xl">
     <div class="card-body">
-      <h2 class="card-title justify-center mb-4">Калькулятор инсулинорезистентности</h2>
+      <h2 class="card-title justify-center mb-4">Расчет чувствительности к инсулину</h2>
 
       <div class="form-control">
         <label class="label">
@@ -48,7 +48,6 @@
       <div v-if="showResult" class="mt-4">
         <div class="alert alert-success">
           <p class="font-semibold">IS Index: {{ insulinSensitivity }}</p>
-          <small>Мужчины ≤5.02, Женщины ≤5.64 указывают на резистентность</small>
         </div>
       </div>
 
