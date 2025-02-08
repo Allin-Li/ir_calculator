@@ -1,19 +1,18 @@
 <script setup lang="ts">
-
 import ThemeToggle from './components/ThemeToggle.vue'
 import Calculator from './components/Calculator.vue'
 import Notes from './components/Notes.vue'
-import { onMounted } from 'vue';
+import { onMounted } from 'vue'
+import { type ThemeName, DEFAULT_THEME } from './constants/themes'
 
 const setTheme = (theme: ThemeName): void => {
   document.documentElement.setAttribute('data-theme', theme)
 }
 
 onMounted(() => {
-  const theme = localStorage.getItem('theme') || 'emerald';
+  const theme = localStorage.getItem('theme') || DEFAULT_THEME
   document.documentElement.setAttribute('data-theme', theme)
 })
-
 </script>
 
 <template>
