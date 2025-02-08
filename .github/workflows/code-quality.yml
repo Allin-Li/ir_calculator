@@ -2,9 +2,11 @@ name: Code Quality
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - '**'  # This matches all branches
   pull_request:
-    branches: [ main ]
+    branches:
+      - '**'  # This matches all branches
 
 jobs:
   check:
@@ -27,5 +29,5 @@ jobs:
         run: bun run lint
 
       - name: Check formatting
-        run: bun run format
+        run: bun run format:check
 
