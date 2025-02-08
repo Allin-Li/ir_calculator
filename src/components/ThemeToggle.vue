@@ -1,21 +1,23 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { THEMES, type ThemeName, DEFAULT_THEME } from '../constants/themes'
+import { THEMES, type ThemeName, DEFAULT_THEME, isValidTheme } from '../constants/themes'
 
-const theme = ref<ThemeName>((localStorage.getItem('theme') as ThemeName) || DEFAULT_THEME)
-const emit = defineEmits<{
-  'theme-changed': [theme: ThemeName]
-}>()
+const storedTheme = localStorage.getItem('theme')
+const theme = ref<ThemeName>(isValidTheme(storedTheme) ? storedTheme : DEFAULT_THEME)
+
+const setTheme = (newTheme: ThemeName): void => {
+  theme.value = newTheme
+  localStorage.setItem('theme', newTheme)
+  document.documentElement.setAttribute('data-theme', newTheme)
+}
 
 const toggleTheme = (): void => {
-  theme.value = theme.value === THEMES.LIGHT ? THEMES.DARK : THEMES.LIGHT
-  localStorage.setItem('theme', theme.value)
-  document.documentElement.setAttribute('data-theme', theme.value)
-  emit('theme-changed', theme.value)
+  const newTheme = theme.value === THEMES.LIGHT ? THEMES.DARK : THEMES.LIGHT
+  setTheme(newTheme)
 }
 
 onMounted(() => {
-  document.documentElement.setAttribute('data-theme', theme.value)
+  setTheme(theme.value)
 })
 </script>
 
