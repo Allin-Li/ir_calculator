@@ -72,14 +72,10 @@ export default [
       "vue/comment-directive": "off",
       "vue/multi-word-component-names": "off",
 
-      // "vue/no-unused-components": "error",
-      // "vue/require-v-for-key": "error",
-      // "vue/valid-template-root": "error",
-
-      // // Vue style rules
-      // "vue/html-self-closing": ["error", { html: { void: "always" } }],
-      // "vue/component-name-in-template-casing": ["error", "PascalCase"],
-      // "vue/component-tags-order": ["error", { order: ["script", "template", "style"] }],
+      // Vue style rules that should match Prettier
+      "vue/html-self-closing": ["error", { html: { void: "always" } }],
+      "vue/max-attributes-per-line": "off",
+      "vue/singleline-html-element-content-newline": "off",
 
       // // Vue 3 specific
       // "vue/no-v-html": "error",

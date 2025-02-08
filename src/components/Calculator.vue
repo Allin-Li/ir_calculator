@@ -64,8 +64,8 @@ const insulinSensitivity = computed(() => {
           <span class="label-text">Окружность талии (см)</span>
         </label>
         <input
-          type="number"
           v-model.number="waist"
+          type="number"
           class="input input-bordered"
           min="10"
           max="500"
@@ -79,8 +79,8 @@ const insulinSensitivity = computed(() => {
           <span class="label-text">HbA1c (%)</span>
         </label>
         <input
-          type="number"
           v-model.number="hba1c"
+          type="number"
           class="input input-bordered"
           min="0"
           max="100"
@@ -94,8 +94,8 @@ const insulinSensitivity = computed(() => {
           <span class="label-text">Триглицериды (ммоль/л)</span>
         </label>
         <input
-          type="number"
           v-model.number="triglycerides"
+          type="number"
           class="input input-bordered"
           min="0"
           max="999"
@@ -106,7 +106,7 @@ const insulinSensitivity = computed(() => {
 
       <div class="form-control">
         <label class="label cursor-pointer items-start gap-2">
-          <input type="checkbox" v-model="isHealthProfessional" class="checkbox mt-1" />
+          <input v-model="isHealthProfessional" type="checkbox" class="checkbox mt-1" />
           <span class="label-text whitespace-normal"
             >Я являюсь специалистом в области здравоохранения</span
           >

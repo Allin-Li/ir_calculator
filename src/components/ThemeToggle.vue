@@ -42,8 +42,8 @@ onMounted(() => {
     <input
       type="checkbox"
       :checked="theme === THEMES.DARK"
-      @change="toggleTheme"
       class="toggle theme-controller"
+      @change="toggleTheme"
     />
     <svg
       xmlns="http://www.w3.org/2000/svg"
