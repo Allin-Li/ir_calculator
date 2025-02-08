@@ -34,13 +34,18 @@ export default [
       "@typescript-eslint": tsPlugin
     },
     rules: {
+      // Core rules
       "no-console": "warn",
       "no-debugger": "error",
+
+      // TypeScript rules
       "@typescript-eslint/no-explicit-any": "warn",
       "@typescript-eslint/explicit-function-return-type": "error",
-      "@typescript-eslint/no-unused-vars": "error",
+      "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
       "@typescript-eslint/no-floating-promises": "error",
-      "@typescript-eslint/no-misused-promises": "error"
+      "@typescript-eslint/no-misused-promises": "error",
+      "@typescript-eslint/consistent-type-imports": "error",
+      "@typescript-eslint/no-non-null-assertion": "error"
     }
   },
   {
@@ -59,20 +64,25 @@ export default [
       vue: vuePlugin
     },
     rules: {
+      // Vue core rules
       "vue/multi-word-component-names": "off",
-      // Vue 3 essential rules
       "vue/no-unused-components": "error",
       "vue/require-v-for-key": "error",
       "vue/valid-template-root": "error",
-      // Vue 3 strongly recommended rules
-      "vue/attribute-hyphenation": "error",
-      "vue/component-definition-name-casing": ["error", "PascalCase"],
-      "vue/v-bind-style": "error",
-      // Vue 3 recommended rules
-      "vue/component-tags-order": ["error", {
-        order: ["script", "template", "style"]
-      }],
-      "vue/no-v-html": "error"
+
+      // Vue style rules
+      "vue/html-self-closing": ["error", { html: { void: "always" } }],
+      "vue/component-name-in-template-casing": ["error", "PascalCase"],
+      "vue/component-tags-order": ["error", { order: ["script", "template", "style"] }],
+
+      // Vue 3 specific
+      "vue/no-v-html": "error",
+      "vue/require-explicit-emits": "error",
+      "vue/script-setup-uses-vars": "error",
+
+      // Tailwind/DaisyUI specific
+      "vue/max-attributes-per-line": "off",
+      "vue/singleline-html-element-content-newline": "off"
     }
   }
 ];
