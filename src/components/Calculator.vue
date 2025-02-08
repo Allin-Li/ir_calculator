@@ -35,17 +35,20 @@ watch([waist, hba1c, triglycerides], () => {
 })
 
 const insulinSensitivity = computed(() => {
-  if (!isValid.value || waist.value === null || hba1c.value === null || triglycerides.value === null) {
+  if (
+    !isValid.value ||
+    waist.value === null ||
+    hba1c.value === null ||
+    triglycerides.value === null
+  ) {
     return null
   }
 
   const triglyceridesMgdl = triglycerides.value / 0.0113
   const hba1cDecimal = hba1c.value / 100
 
-  const exponent = 4.64725
-    - (0.02032 * waist.value)
-    - (0.09779 * hba1cDecimal)
-    - (0.00235 * triglyceridesMgdl)
+  const exponent =
+    4.64725 - 0.02032 * waist.value - 0.09779 * hba1cDecimal - 0.00235 * triglyceridesMgdl
 
   return Number(Math.exp(exponent).toFixed(2))
 })
@@ -104,7 +107,9 @@ const insulinSensitivity = computed(() => {
       <div class="form-control">
         <label class="label cursor-pointer items-start gap-2">
           <input type="checkbox" v-model="isHealthProfessional" class="checkbox mt-1" />
-          <span class="label-text whitespace-normal">Я являюсь специалистом в области здравоохранения</span>
+          <span class="label-text whitespace-normal"
+            >Я являюсь специалистом в области здравоохранения</span
+          >
         </label>
       </div>
 
