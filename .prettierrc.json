@@ -3,6 +3,6 @@
   "semi": false,
   "singleQuote": true,
   "printWidth": 100,
-  "vueIndentScriptAndStyle": false,
-  "htmlWhitespaceSensitivity": "strict"
+  "htmlWhitespaceSensitivity": "css",
+  "bracketSameLine": true
 }

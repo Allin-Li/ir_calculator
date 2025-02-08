@@ -76,6 +76,11 @@ export default [
       "vue/html-self-closing": ["error", { html: { void: "always" } }],
       "vue/max-attributes-per-line": "off",
       "vue/singleline-html-element-content-newline": "off",
+      "vue/multiline-html-element-newline": "off",
+      "vue/html-closing-bracket-newline": ["error", {
+        "singleline": "never",
+        "multiline": "never"
+      }]
 
       // // Vue 3 specific
       // "vue/no-v-html": "error",
