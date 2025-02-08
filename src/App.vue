@@ -20,10 +20,9 @@ import ThemeToggle from './components/ThemeToggle.vue'
 import Calculator from './components/Calculator.vue'
 import Notes from './components/Notes.vue'
 
-const theme = ref(localStorage.getItem('theme') || 'light')
-
+const theme = ref(localStorage.getItem('theme') || 'emerald')
 const toggleTheme = () => {
-  theme.value = theme.value === 'light' ? 'dracula' : 'light'
+  theme.value = theme.value === 'emerald' ? 'dracula' : 'emerald'
   localStorage.setItem('theme', theme.value)
   document.documentElement.setAttribute('data-theme', theme.value)
 }

@@ -45,6 +45,13 @@
         />
       </div>
 
+      <div class="form-control">
+        <label class="label cursor-pointer items-start gap-2">
+          <input type="checkbox" v-model="isHealthProfessional" class="checkbox mt-1" />
+          <span class="label-text whitespace-normal">Я являюсь специалистом в области здравоохранения</span>
+        </label>
+      </div>
+
       <div v-if="showResult" class="mt-4">
         <div class="alert alert-success">
           <p class="font-semibold">IS Index: {{ insulinSensitivity }}</p>
@@ -63,6 +70,8 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
 
+const isHealthProfessional = ref(false)
+
 // Calculator logic
 const waist = ref(null)
 const hba1c = ref(null)
@@ -74,7 +83,7 @@ const isValid = computed(() => (
   Number.isFinite(triglycerides.value) && triglycerides.value > 0
 ))
 
-const showResult = computed(() => isValid.value)
+const showResult = computed(() => isHealthProfessional.value && isValid.value)
 const showError = computed(() => !isValid.value && hasInteracted.value)
 
 const hasInteracted = ref(false)
