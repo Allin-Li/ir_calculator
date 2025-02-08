@@ -70,8 +70,7 @@ const insulinSensitivity = computed(() => {
           min="10"
           max="500"
           step="1"
-          required
-        />
+          required />
       </div>
 
       <div class="form-control">
@@ -85,8 +84,7 @@ const insulinSensitivity = computed(() => {
           min="0"
           max="100"
           step="0.1"
-          required
-        />
+          required />
       </div>
 
       <div class="form-control">
@@ -100,8 +98,7 @@ const insulinSensitivity = computed(() => {
           min="0"
           max="999"
           step="0.01"
-          required
-        />
+          required />
       </div>
 
       <div class="form-control">
