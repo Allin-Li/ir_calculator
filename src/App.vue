@@ -5,7 +5,7 @@ import Calculator from './components/Calculator.vue'
 import Notes from './components/Notes.vue'
 import { onMounted } from 'vue';
 
-const setTheme = (theme) => {
+const setTheme = (theme: ThemeName): void => {
   document.documentElement.setAttribute('data-theme', theme)
 }
 

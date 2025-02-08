@@ -9,7 +9,7 @@ export default defineConfig({
     tailwindcss(),
     {
       name: 'theme-inject',
-      transform(code, id) {
+      transform(code: string, id: string): { code: string; map: null } | undefined {
         if (id.endsWith('style.css')) {
           return {
             code: `

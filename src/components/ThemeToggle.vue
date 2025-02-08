@@ -7,7 +7,7 @@ const emit = defineEmits<{
   'theme-changed': [theme: ThemeName]
 }>()
 
-const toggleTheme = () => {
+const toggleTheme = (): void => {
   theme.value = theme.value === THEMES.LIGHT ? THEMES.DARK : THEMES.LIGHT
   localStorage.setItem('theme', theme.value)
   document.documentElement.setAttribute('data-theme', theme.value)
