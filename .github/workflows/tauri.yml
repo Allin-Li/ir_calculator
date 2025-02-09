@@ -63,22 +63,35 @@ jobs:
       - name: Build Tauri app (Linux)
         run: bun tauri build
 
-      - name: Upload Linux binaries
+      - name: Upload Linux DEB
         uses: actions/upload-artifact@v4
         with:
-            name: linux-binaries
-            path: |
-                src-tauri/target/release/bundle/deb/*.deb
-                src-tauri/target/release/bundle/rpm/*.rpm
-                src-tauri/target/release/bundle/appimage/*.AppImage
+          name: linux-deb
+          path: src-tauri/target/release/bundle/deb/*.deb
+
+      - name: Upload Linux RPM
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-rpm
+          path: src-tauri/target/release/bundle/rpm/*.rpm
+
+      - name: Upload Linux AppImage
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-appimage
+          path: src-tauri/target/release/bundle/appimage/*.AppImage
 
       - name: Build Tauri app (Windows)
         run: bun tauri build --runner cargo-xwin --target x86_64-pc-windows-msvc
 
-      - name: Upload Windows binary
+      - name: Upload Windows NSIS Installer
         uses: actions/upload-artifact@v4
         with:
-          name: windows-binary
-          path: |
-            src-tauri/target/x86_64-pc-windows-msvc/release/bundle/nsis/*.exe
-            src-tauri/target/x86_64-pc-windows-msvc/release/app.exe
+          name: windows-installer
+          path: src-tauri/target/x86_64-pc-windows-msvc/release/bundle/nsis/*.exe
+
+      - name: Upload Windows Executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-exe
+          path: src-tauri/target/x86_64-pc-windows-msvc/release/app.exe
