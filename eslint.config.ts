@@ -66,6 +66,7 @@ export default [
       vue: vuePlugin
     },
     rules: {
+      ...prettier.rules,
       ...vuePlugin.configs.base.rules,
       ...vuePlugin.configs["vue3-essential"].rules,
       ...vuePlugin.configs["vue3-strongly-recommended"].rules,
@@ -74,24 +75,13 @@ export default [
       "vue/comment-directive": "off",
       "vue/multi-word-component-names": "off",
 
-      // Vue style rules that should match Prettier
-      "vue/html-self-closing": ["error", { html: { void: "always" } }],
+      "vue/html-self-closing": "off",
       "vue/max-attributes-per-line": "off",
       "vue/singleline-html-element-content-newline": "off",
       "vue/multiline-html-element-newline": "off",
-      "vue/html-closing-bracket-newline": ["error", {
-        "singleline": "never",
-        "multiline": "never"
-      }]
-
-      // // Vue 3 specific
-      // "vue/no-v-html": "error",
-      // "vue/require-explicit-emits": "error",
-      // "vue/script-setup-uses-vars": "error",
-
-      // // Tailwind/DaisyUI specific
-      // "vue/max-attributes-per-line": "off",
-      // "vue/singleline-html-element-content-newline": "off"
+      "vue/html-closing-bracket-newline": "off",
+      "vue/html-indent": "off",
+      "vue/html-quotes": "off"
     }
   }
 ];
