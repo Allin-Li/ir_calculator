@@ -4,6 +4,7 @@ import vueEslintParser from "vue-eslint-parser";
 import vuePlugin from "eslint-plugin-vue";
 import tsPlugin from "@typescript-eslint/eslint-plugin";
 import tsParser from "@typescript-eslint/parser";
+import prettier from 'eslint-config-prettier'
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -50,6 +51,7 @@ export default [
   },
   {
     files: ["**/*.vue"],
+    ...prettier,
     languageOptions: {
       parser: vueEslintParser,
       parserOptions: {
