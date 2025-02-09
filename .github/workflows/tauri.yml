@@ -27,17 +27,22 @@ jobs:
         run: |
             sudo apt-get update
             sudo apt-get install -y \
-                libwebkit2gtk-4.1-dev \
-                build-essential \
-                curl \
-                wget \
-                file \
-                libxdo-dev \
-                libssl-dev \
-                libayatana-appindicator3-dev \
-                librsvg2-dev \
-                libgtk-3-dev \
-                patchelf
+            libwebkit2gtk-4.1-dev \
+            build-essential \
+            curl \
+            wget \
+            file \
+            libxdo-dev \
+            libssl-dev \
+            libayatana-appindicator3-dev \
+            librsvg2-dev \
+            libgtk-3-dev \
+            patchelf \
+            nsis \
+            lld \
+            llvm \
+            rpm \
+            fakeroot
 
       - name: Install frontend dependencies
         run: bun install
@@ -49,12 +54,26 @@ jobs:
       - name: Run clippy
         working-directory: src-tauri
         run: cargo clippy -- -D warnings
-        
-      - name: Build Tauri app
+
+      - name: Build Tauri app (Linux)
         run: bun tauri build
-        
-      - name: Upload Linux binary
+
+      - name: Build Tauri app (Windows)
+        run: bun tauri build --runner cargo-xwin --target x86_64-pc-windows-msvc
+
+      - name: Upload Linux binaries
         uses: actions/upload-artifact@v4
         with:
-          name: linux-binary
-          path: src-tauri/target/release/bundle/deb/*.deb
+          name: linux-binaries
+          path: |
+            src-tauri/target/release/bundle/deb/*.deb
+            src-tauri/target/release/bundle/rpm/*.rpm
+            src-tauri/target/release/bundle/appimage/*.AppImage
+
+      - name: Upload Windows binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-binary
+          path: |
+            src-tauri/target/x86_64-pc-windows-msvc/release/bundle/nsis/*.exe
+            src-tauri/target/x86_64-pc-windows-msvc/release/app.exe
