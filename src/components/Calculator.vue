@@ -104,9 +104,9 @@ const insulinSensitivity = computed(() => {
       <div class="form-control">
         <label class="label cursor-pointer items-start gap-2">
           <input v-model="isHealthProfessional" type="checkbox" class="checkbox mt-1" />
-          <span class="label-text whitespace-normal"
-            >Я являюсь специалистом в области здравоохранения</span
-          >
+          <span class="label-text whitespace-normal">
+            Я являюсь специалистом в области здравоохранения
+          </span>
         </label>
       </div>
 
