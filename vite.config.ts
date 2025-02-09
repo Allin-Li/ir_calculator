@@ -1,24 +1,39 @@
-import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
+import { fileURLToPath, URL } from 'node:url'
 import vue from '@vitejs/plugin-vue'
 import tailwindcss from '@tailwindcss/vite'
-//import vueDevTools from 'vite-plugin-vue-devtools'
+import { THEMES, DEFAULT_THEME } from './src/constants/themes'
 
 const host = process.env.TAURI_DEV_HOST
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [
-    vue(),
+    {
+      name: 'theme-inject',
+      transform(code: string, id: string): { code: string; map: null } | undefined {
+        if (id.endsWith('style.css')) {
+          const daisyuiThemes = [DEFAULT_THEME, THEMES.DARK].join(', ');
+          const injectedCode = `@plugin "daisyui" {
+  themes: ${daisyuiThemes};
+}`;
+          const modifiedCode = code + '\n' + injectedCode;
+          return {
+            code: modifiedCode,
+            map: null,
+          };
+        }
+        return undefined;
+      },
+      enforce: 'pre',
+    },
     tailwindcss(),
-    //    vueDevTools(),
+    vue(),
   ],
-  
   // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
   //
   // 1. prevent vite from obscuring rust errors
   clearScreen: false,
-  
+
   // 2. tauri expects a fixed port, fail if that port is not available
   server: {
     port: 1420,
@@ -36,16 +51,16 @@ export default defineConfig({
       ignored: ['**/src-tauri/**'],
     },
   },
-  
+
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
-  
+
   build: {
     chunkSizeWarningLimit: 1000, // size in kB
   },
-  
+
   base: './',
 })
