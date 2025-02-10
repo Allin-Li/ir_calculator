@@ -3,12 +3,13 @@ name: Tauri Build
 on:
   push:
     branches: ['**']
+    tags: ['*']
   pull_request:
     branches: ['**']
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       
@@ -27,17 +28,27 @@ jobs:
         run: |
             sudo apt-get update
             sudo apt-get install -y \
-                libwebkit2gtk-4.1-dev \
-                build-essential \
-                curl \
-                wget \
-                file \
-                libxdo-dev \
-                libssl-dev \
-                libayatana-appindicator3-dev \
-                librsvg2-dev \
-                libgtk-3-dev \
-                patchelf
+            build-essential \
+            curl \
+            wget \
+            file \
+            libxdo-dev \
+            libssl-dev \
+            libayatana-appindicator3-dev \
+            librsvg2-dev \
+            libgtk-3-dev \
+            patchelf \
+            nsis \
+            lld \
+            llvm \
+            rpm \
+            fakeroot \
+            libwebkit2gtk-4.1-0=2.44.0-2 \
+            libwebkit2gtk-4.1-dev=2.44.0-2 \
+            libjavascriptcoregtk-4.1-0=2.44.0-2 \
+            libjavascriptcoregtk-4.1-dev=2.44.0-2 \
+            gir1.2-javascriptcoregtk-4.1=2.44.0-2 \
+            gir1.2-webkit2-4.1=2.44.0-2
 
       - name: Install frontend dependencies
         run: bun install
@@ -49,12 +60,92 @@ jobs:
       - name: Run clippy
         working-directory: src-tauri
         run: cargo clippy -- -D warnings
-        
-      - name: Build Tauri app
+
+      - name: Setup Windows cross-compilation
+        run: |
+          rustup target add x86_64-pc-windows-msvc
+          cargo install --locked cargo-xwin
+
+      - name: Build Tauri app (Linux)
         run: bun tauri build
-        
-      - name: Upload Linux binary
+
+      - name: Upload Linux DEB
         uses: actions/upload-artifact@v4
         with:
-          name: linux-binary
+          name: linux-deb
           path: src-tauri/target/release/bundle/deb/*.deb
+
+      - name: Upload Linux RPM
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-rpm
+          path: src-tauri/target/release/bundle/rpm/*.rpm
+
+      - name: Upload Linux AppImage
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-appimage
+          path: src-tauri/target/release/bundle/appimage/*.AppImage
+
+      - name: Build Tauri app (Windows)
+        run: bun tauri build --runner cargo-xwin --target x86_64-pc-windows-msvc
+
+      - name: Upload Windows NSIS Installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-installer
+          path: src-tauri/target/x86_64-pc-windows-msvc/release/bundle/nsis/*.exe
+
+      - name: Upload Windows Executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-exe
+          path: src-tauri/target/x86_64-pc-windows-msvc/release/app.exe
+
+
+  release:
+    needs: build
+    runs-on: ubuntu-24.04
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Find Linux DEB file
+        id: find_deb
+        run: |
+          echo "DEB_PATH=$(ls artifacts/linux-deb/*.deb)" >> $GITHUB_OUTPUT
+
+      - name: Find Linux RPM file
+        id: find_rpm
+        run: |
+          echo "RPM_PATH=$(ls artifacts/linux-rpm/*.rpm)" >> $GITHUB_OUTPUT
+
+      - name: Find Linux AppImage
+        id: find_appimage
+        run: |
+          echo "APPIMAGE_PATH=$(ls artifacts/linux-appimage/*.AppImage)" >> $GITHUB_OUTPUT
+
+      - name: Find Windows Installer
+        id: find_win_installer
+        run: |
+          echo "WIN_INSTALLER_PATH=$(ls artifacts/windows-installer/*.exe)" >> $GITHUB_OUTPUT
+
+      - name: Find Windows EXE
+        id: find_win_exe
+        run: |
+          echo "WIN_EXE_PATH=$(ls artifacts/windows-exe/*.exe)" >> $GITHUB_OUTPUT
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            ${{ steps.find_deb.outputs.DEB_PATH }}
+            ${{ steps.find_rpm.outputs.RPM_PATH }}
+            ${{ steps.find_appimage.outputs.APPIMAGE_PATH }}
+            ${{ steps.find_win_installer.outputs.WIN_INSTALLER_PATH }}
+            ${{ steps.find_win_exe.outputs.WIN_EXE_PATH }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
