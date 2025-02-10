@@ -3,6 +3,7 @@ name: Tauri Build
 on:
   push:
     branches: ['**']
+    tags: ['*']
   pull_request:
     branches: ['**']
 
@@ -16,9 +17,6 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt, clippy
-          
-      - name: Rust cache
-        uses: swatinem/rust-cache@v2
         
       - name: Setup Bun
         uses: oven-sh/setup-bun@v1
@@ -100,3 +98,51 @@ jobs:
         with:
           name: windows-exe
           path: src-tauri/target/x86_64-pc-windows-msvc/release/app.exe
+
+
+  release:
+    needs: build
+    runs-on: ubuntu-24.04
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Find Linux DEB file
+        id: find_deb
+        run: |
+          echo "DEB_PATH=$(ls artifacts/linux-deb/*.deb)" >> $GITHUB_OUTPUT
+
+      - name: Find Linux RPM file
+        id: find_rpm
+        run: |
+          echo "RPM_PATH=$(ls artifacts/linux-rpm/*.rpm)" >> $GITHUB_OUTPUT
+
+      - name: Find Linux AppImage
+        id: find_appimage
+        run: |
+          echo "APPIMAGE_PATH=$(ls artifacts/linux-appimage/*.AppImage)" >> $GITHUB_OUTPUT
+
+      - name: Find Windows Installer
+        id: find_win_installer
+        run: |
+          echo "WIN_INSTALLER_PATH=$(ls artifacts/windows-installer/*.exe)" >> $GITHUB_OUTPUT
+
+      - name: Find Windows EXE
+        id: find_win_exe
+        run: |
+          echo "WIN_EXE_PATH=$(ls artifacts/windows-exe/*.exe)" >> $GITHUB_OUTPUT
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            ${{ steps.find_deb.outputs.DEB_PATH }}
+            ${{ steps.find_rpm.outputs.RPM_PATH }}
+            ${{ steps.find_appimage.outputs.APPIMAGE_PATH }}
+            ${{ steps.find_win_installer.outputs.WIN_INSTALLER_PATH }}
+            ${{ steps.find_win_exe.outputs.WIN_EXE_PATH }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
